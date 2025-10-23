@@ -1,0 +1,100 @@
+<ion-content class="ion-padding verification-page">
+ <div class="header">
+  <ion-button fill="clear" (click)="volver()" class="back-btn-inline">
+    <ion-icon name="arrow-back-outline"></ion-icon>
+  </ion-button>
+  <h2>Verificación #{{ inventaryId }}</h2>
+</div>
+  <!-- ICONO PRINCIPAL -->
+  <div class="icon-circle">
+    <img src="../../../assets/images/3D_Forma_Sesion.png" alt="Inventarios" />
+  
+  </div>
+    <h1 class="title">Verificar inventario</h1>
+
+  <!-- RESUMEN -->
+  <section class="section">
+    <ion-card *ngIf="comparacion" class="summary-card">
+      <ion-card-content>
+        <p>{{ comparacion.shortSummary }}</p>
+      </ion-card-content>
+    </ion-card>
+  </section>
+
+  <!-- RESULTADOS -->
+  <section class="section issues">
+    <ion-card *ngIf="comparacion?.missingItems?.length" class="issue-card missing">
+      <ion-card-header>
+        <ion-card-title>Ítems Faltantes ({{ comparacion.missingItems.length }})</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item *ngFor="let item of comparacion.missingItems" lines="none" class="item">
+          <ion-label>
+            <h3>{{ item.name }}</h3>
+            <p><strong>Código:</strong> {{ item.code }}</p>
+            <p class="reason">{{ item.reason }}</p>
+            <p class="suggestion"><strong>Sugerencia:</strong> {{ item.suggestedAction }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="comparacion?.unexpectedItems?.length" class="issue-card unexpected">
+      <ion-card-header>
+        <ion-card-title>Ítems Inesperados ({{ comparacion.unexpectedItems.length }})</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item *ngFor="let item of comparacion.unexpectedItems" lines="none" class="item">
+          <ion-label>
+            <h3>{{ item.name }}</h3>
+            <p><strong>Código:</strong> {{ item.code }}</p>
+            <p>{{ item.reason || 'Escaneado pero no esperado en esta zona' }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="comparacion?.stateMismatches?.length" class="issue-card mismatch">
+      <ion-card-header>
+        <ion-card-title>Discrepancias de Estado ({{ comparacion.stateMismatches.length }})</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item *ngFor="let item of comparacion.stateMismatches" lines="none" class="item">
+          <ion-label>
+            <h3>{{ item.name }}</h3>
+            <p><strong>Código:</strong> {{ item.code }}</p>
+            <p>Esperado: <strong>{{ item.expectedState }}</strong></p>
+            <p>Escaneado: <strong>{{ item.scannedState }}</strong></p>
+          </ion-label>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+  </section>
+
+  <!-- OBSERVACIONES -->
+  <section class="section">
+    <ion-card class="notes">
+      <ion-card-header>
+        <ion-card-title>Observaciones</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-textarea
+          [(ngModel)]="observaciones"
+          placeholder="Escribe observaciones adicionales (opcional)"
+          auto-grow="true">
+        </ion-textarea>
+      </ion-card-content>
+    </ion-card>
+  </section>
+
+  <!-- ACCIONES -->
+  <div class="actions">
+    <ion-button color="danger" expand="block" (click)="negarVerificacion()" [disabled]="cargando">
+      <ion-icon name="close-circle-outline"></ion-icon> Negar Verificación
+    </ion-button>
+    <ion-button color="success" expand="block" (click)="confirmarCierre()" [disabled]="cargando">
+      <ion-icon name="checkmark-circle-outline"></ion-icon> Confirmar Verificación
+    </ion-button>
+  </div>
+
+</ion-content>
