@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button fill="clear" shape="round" (click)="cancelScan()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+     <ion-title>Scanner</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="scanner-page">
+  <div class="scanner-container">
+
+    <!-- Modal temporal "Apunta al QR" -->
+    <div class="scan-instructions-modal" *ngIf="showInstructions">
+      <ion-icon name="qr-code-outline"></ion-icon>
+      <p>Apunta al código QR</p>
+    </div>
+
+    <!-- Marco de escaneo -->
+    <div class="scan-frame">
+      <div class="scan-corner top-left"></div>
+      <div class="scan-corner top-right"></div>
+      <div class="scan-corner bottom-left"></div>
+      <div class="scan-corner bottom-right"></div>
+      <div class="scan-line"></div>
+    </div>
+  </div>
+
+  <!-- Código escaneado -->
+  <div class="code-display" *ngIf="scannedCode">
+    <div class="code-header">
+      <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+      <h3>Código detectado</h3>
+    </div>
+    <div class="code-content">
+      <p class="code-text">{{ scannedCode }}</p>
+    </div>
+  </div>
+</ion-content>

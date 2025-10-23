@@ -1,0 +1,15 @@
+<ion-content fullscreen>
+  <div class="background">
+    <img [src]="background" class="background-img active" />
+  </div>
+  <div class="content">
+    <div *ngIf="!showWelcome" class="logo-container fade-in">
+      <img [src]="logo" class="logo" />
+    </div>
+
+    <div *ngIf="showWelcome" class="hola-container fade-in-scale">
+      <img [src]="logo" class="final-logo" />
+      <h1 class="hola-text">Bienvenido</h1>
+    </div>
+  </div>
+</ion-content>
