@@ -1,0 +1,138 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Orbitron:wght@500&display=swap');
+
+body, ion-content {
+  background: radial-gradient(circle at center, #02060a 0%, #000 100%) !important;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
+}
+
+/* Contenedor del escáner */
+.scanner-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Marco de escaneo */
+.scan-frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px;
+  height: 280px;
+  border: 2px solid rgba(0, 191, 255, 0.5);
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(0, 191, 255, 0.3);
+  overflow: hidden;
+  animation: framePulse 2.2s infinite alternate ease-in-out;
+}
+
+@keyframes framePulse {
+  0% { box-shadow: 0 0 15px rgba(0, 191, 255, 0.2); }
+  100% { box-shadow: 0 0 40px rgba(0, 191, 255, 0.6); }
+}
+
+/* Esquinas brillantes */
+.scan-corner {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border-color: #00bfff;
+  border-style: solid;
+  filter: drop-shadow(0 0 6px #00bfff);
+}
+
+.top-left { top:0; left:0; border-width:3px 0 0 3px; }
+.top-right { top:0; right:0; border-width:3px 3px 0 0; }
+.bottom-left { bottom:0; left:0; border-width:0 0 3px 3px; }
+.bottom-right { bottom:0; right:0; border-width:0 3px 3px 0; }
+
+/* Línea de escaneo */
+.scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #00bfff, #00e5ff, transparent);
+  box-shadow: 0 0 15px #00e5ff, 0 0 30px rgba(0, 229, 255, 0.5);
+  animation: scan 2.5s infinite ease-in-out;
+  opacity: 0.9;
+}
+
+@keyframes scan {
+  0% { transform: translateY(0); opacity: 0.9; }
+  50% { opacity: 1; }
+  100% { transform: translateY(277px); opacity: 0.9; }
+}
+
+.scan-instructions-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.85);
+  padding: 18px 26px;
+  border-radius: 14px;
+  text-align: center;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+  animation: fadeInOut 4s forwards;
+  box-shadow: 0 0 15px rgba(0, 191, 255, 0.4);
+}
+.scan-instructions-modal ion-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+  color: #00bfff;
+}
+@keyframes framePulse {
+  0% { box-shadow: 0 0 15px rgba(0, 191, 255, 0.2); }
+  100% { box-shadow: 0 0 40px rgba(0, 191, 255, 0.6); }
+}
+
+@keyframes scan {
+  0% { transform: translateY(0); opacity: 0.9; }
+  50% { opacity: 1; }
+  100% { transform: translateY(277px); opacity: 0.9; }
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, -60%); }
+  10% { opacity: 1; transform: translate(-50%, -50%); }
+  80% { opacity: 1; transform: translate(-50%, -50%); }
+  100% { opacity: 0; transform: translate(-50%, -60%); }
+}
+/* Código escaneado */
+.code-display {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 51, 102, 0.3);
+  backdrop-filter: blur(12px) saturate(160%);
+  border-radius: 10px;
+  padding: 18px 24px;
+  width: 80%;
+  max-width: 340px;
+  text-align: center;
+  z-index: 5;
+}
+
+.code-display .code-text {
+  font-family: 'Orbitron', monospace;
+  font-size: 17px;
+  font-weight: bold;
+  color: #00e5ff;
+  background: rgba(0, 191, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px;
+  word-break: break-all;
+}
