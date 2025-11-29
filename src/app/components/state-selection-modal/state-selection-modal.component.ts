@@ -1,9 +1,11 @@
-import { Component, Input } from '@angular/core';
-import { ModalController, AlertController, IonicModule } from '@ionic/angular';
+import { Component, Input, OnInit } from '@angular/core';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { STATE_ITEMS, StateItem } from 'src/app/Interfaces/state-item.model';
 import { InventoryService } from 'src/app/services/inventary.service';
+import { StateItem } from 'src/app/Interfaces/state-item.model';
+import { firstValueFrom } from 'rxjs';
+import { StateItemService } from 'src/app/services/stateItem.service';
 
 @Component({
   selector: 'app-state-selection-modal',
@@ -12,21 +14,46 @@ import { InventoryService } from 'src/app/services/inventary.service';
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule],
 })
-export class StateSelectionModalComponent {
+export class StateSelectionModalComponent implements OnInit {
   @Input() code!: string;
   @Input() inventaryId!: number;
 
   selectedStateId: number | null = null;
-  stateItems: StateItem[] = STATE_ITEMS;
+  stateItems: StateItem[] = [];
+  isProcessing = false;
+
+  showFeedbackView = false;
+  feedbackMessage = '';
+  feedbackStatus: 'success' | 'error' | 'warning' | 'info' = 'info';
+  private lastResponse: any = null;
 
   constructor(
     private modalCtrl: ModalController,
-    private alertCtrl: AlertController,
-    private inventoryService: InventoryService
-  ) {}
+    private inventoryService: InventoryService,
+    private stateItemService: StateItemService
+  ) { }
+
+  async ngOnInit() {
+    await this.loadStateItems();
+  }
+
+  /** 🔹 Carga los estados reales desde la API */
+  private async loadStateItems() {
+    try {
+      this.stateItems = await firstValueFrom(this.stateItemService.getStateItems());
+      if (!this.stateItems.length) {
+        console.warn('⚠️ No se encontraron estados en el backend.');
+      }
+    } catch (err) {
+      console.error('❌ Error al cargar estados de ítem:', err);
+      this.stateItems = [];
+    }
+  }
 
   async confirm() {
-    if (!this.selectedStateId) return;
+    if (this.isProcessing || !this.selectedStateId) return;
+
+    this.isProcessing = true;
 
     const request = {
       inventaryId: this.inventaryId,
@@ -35,53 +62,80 @@ export class StateSelectionModalComponent {
     };
 
     try {
-      const response = await this.inventoryService.scan(request).toPromise();
+      const response = await firstValueFrom(this.inventoryService.scan(request));
+      this.lastResponse = response;
 
-      // ✅ Validación explícita
-      if (!response) {
-        throw new Error('No se recibió respuesta del servidor.');
-      }
+      if (!response) throw new Error('No se recibió respuesta del servidor.');
 
-      // ✅ Manejo según status
-      let feedbackMessage = '';
+      // if (response.isValid && response.itemId && response.status === 'Correct') {
+      //   this.inventoryService.addScannedItem(response.itemId);
+      // }
+
       switch (response.status) {
         case 'Correct':
-          feedbackMessage = '✅ Item escaneado correctamente.';
+          this.feedbackMessage = 'Item escaneado correctamente.';
+          this.feedbackStatus = 'success';
           break;
         case 'WrongZone':
-          feedbackMessage = '⚠ Item no pertenece a esta zona.';
+          this.feedbackMessage = 'Item no pertenece a esta zona.';
+          this.feedbackStatus = 'error';
           break;
         case 'NotFound':
-          feedbackMessage = '❌ Item no encontrado en el sistema.';
+          this.feedbackMessage = 'Item no encontrado en el sistema.';
+          this.feedbackStatus = 'error';
           break;
         case 'Duplicate':
-          feedbackMessage = '🔁 Item ya escaneado anteriormente.';
+          this.feedbackMessage = 'Item ya escaneado anteriormente.';
+          this.feedbackStatus = 'warning';
           break;
         default:
-          feedbackMessage = 'ℹ Operación completada.';
+          this.feedbackMessage = 'Operación completada.';
+          this.feedbackStatus = 'info';
       }
 
-      // Mostrar feedback
-      const alert = await this.alertCtrl.create({
-        header: 'Resultado',
-        message: feedbackMessage,
-        buttons: ['OK'],
-      });
-      await alert.present(); // ✅ Solo una vez
+      this.showFeedbackView = true;
+    } catch (err: any) {
+      let backendMessage = 'No se pudo enviar el escaneo. Verifica tu conexión.';
 
-      // Cerrar modal con resultado
-      await this.modalCtrl.dismiss({ success: true, response });
-    } catch (err) {
-      const alert = await this.alertCtrl.create({
-        header: 'Error',
-        message: 'No se pudo enviar el escaneo. Verifica tu conexión.',
-        buttons: ['OK'],
-      });
-      await alert.present(); // ✅ Solo una vez
+      if (err?.error?.message) {
+        backendMessage = err.error.message;
+      }
+
+      else if (err?.error?.error) {
+        backendMessage = err.error.error;
+      }
+
+      else if (typeof err === 'string') {
+        backendMessage = err;
+      }
+
+      this.lastResponse = { error: backendMessage };
+      this.feedbackMessage = backendMessage;
+      this.feedbackStatus = 'error';
+      this.showFeedbackView = true;
+    } finally {
+      this.isProcessing = false;
     }
   }
 
+  closeModalAndContinue() {
+    const success = this.lastResponse && !this.lastResponse.error;
+    const itemScanned =
+      success && this.lastResponse.isValid && this.lastResponse.itemId;
+
+    this.modalCtrl.dismiss({
+      success,
+      response: this.lastResponse,
+      itemScanned,
+      canContinue: true,
+    });
+  }
+
   dismiss() {
-    this.modalCtrl.dismiss();
+    this.modalCtrl.dismiss({
+      success: false,
+      dismissed: true,
+      canContinue: true,
+    });
   }
 }

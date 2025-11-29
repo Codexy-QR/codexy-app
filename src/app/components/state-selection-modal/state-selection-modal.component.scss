@@ -1,12 +1,16 @@
-ion-content {
-  --background: radial-gradient(circle at top, #0f172a 40%, #0b0f2c);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #f8fafc;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Orbitron:wght@500&display=swap');
+
+:host {
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  height: 100%;
 }
 
-/* Contenedor centrado */
+ion-content {
+  --background: transparent;
+  font-family: 'Poppins', sans-serif;
+}
+
 .center-wrapper {
   display: flex;
   justify-content: center;
@@ -14,128 +18,190 @@ ion-content {
   height: 100%;
 }
 
-/* 🧊 Modal pequeño y elegante */
 .modal-wrapper {
-  background: rgba(30, 41, 59, 0.85);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  backdrop-filter: blur(10px);
-  border-radius: 26px;
-  padding: 16px 20px;
+  background: rgba(11, 15, 44, 0.95) !important;
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 24px;
+  text-align: center;
+  color: white;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(37, 99, 235, 0.4);
   width: 92%;
-  max-width: 310px;
-  box-shadow: 0 0 25px rgba(37, 99, 235, 0.25);
-  animation: smoothAppear 0.45s ease;
-  transition: all 0.3s ease;
+  max-width: 320px;
+  margin: 0 auto;
+  animation: modalAppear 0.3s ease-out;
 }
 
-/* 🪞 Header minimalista */
+@keyframes modalAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 .modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   position: relative;
 }
 
 .modal-header h2 {
-  font-size: 1rem;
-  color: #60a5fa;
+  font-size: 1.25rem;
   font-weight: 700;
-  text-shadow: 0 0 6px rgba(59, 130, 246, 0.4);
+  color: white;
+  margin: 0;
+  text-align: left;
 }
 
 .item-code {
-  font-size: 0.7rem;
-  color: #a1a1aa;
+  font-size: 0.8rem;
+  color: #94a3b8;
   margin-left: auto;
-  margin-right: 6px;
+  margin-right: 8px;
   font-weight: 500;
 }
 
 .close-button {
-  background: rgba(248, 113, 113, 0.08);
-  border: 1px solid rgba(248, 113, 113, 0.3);
-  color: #f87171;
-  border-radius: 50%;
-  width: 26px;
-  height: 26px;
+  --background: transparent;
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 26px;
+  opacity: 0.7;
+  --padding-start: 0;
+  --padding-end: 0;
+  padding: 0;
+  margin: 0;
+  width: 30px;
+  height: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: all 0.2s ease;
-}
-.close-button:hover {
-  background: rgba(248, 113, 113, 0.2);
-  transform: scale(1.1);
 }
 
-/* 🧩 Lista de estados */
+.close-button:hover {
+  opacity: 1;
+}
+
 .state-list {
-  margin: 10px 0;
+  margin: 10px 0 20px;
   background: transparent;
 }
 
 .state-item {
   --background: transparent !important;
-  background: rgba(17, 24, 39, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 12px;
   margin-bottom: 8px;
-  padding: 8px 12px;
   transition: all 0.25s ease;
   cursor: pointer;
-  backdrop-filter: blur(4px);
 }
 
 ion-item::part(native) {
   background: transparent !important;
+  padding-left: 16px;
 }
 
 .state-item:hover {
-  background: rgba(37, 99, 235, 0.15);
+  background: rgba(37, 99, 235, 0.3);
   transform: translateY(-2px);
-  border-color: rgba(56, 189, 248, 0.4);
+  border-color: rgba(59, 130, 246, 0.6);
 }
 
 .state-item.selected {
-  border-color: #38bdf8;
-  background: rgba(56, 189, 248, 0.12);
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
- 
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
 }
 
 .state-item h3 {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   margin: 0;
   color: #f1f5f9;
   font-weight: 600;
 }
 
-.state-item p {
-  font-size: 0.7rem;
-  color: #9ca3af;
-  margin-top: 2px;
-}
-
-/* ✅ Botón Confirmar */
 .confirm-button {
   margin-top: 10px;
   font-weight: 600;
   --border-radius: 20px;
-  font-size: 0.85rem;
-  height: 34px;
+  font-size: 0.9rem;
+  height: 40px;
   letter-spacing: 0.5px;
   --background: linear-gradient(135deg, #2563eb, #3b82f6);
-  box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
+
   transition: all 0.25s ease;
+  font-family: 'Poppins', sans-serif;
 }
+
 .confirm-button:hover {
   transform: scale(1.05);
   box-shadow: 0 0 18px rgba(37, 99, 235, 0.6);
 }
 
-/* 🔹 Animación más fluida */
-@keyframes smoothAppear {
-  0% { opacity: 0; transform: scale(0.95) translateY(10px); }
-  100% { opacity: 1; transform: scale(1) translateY(0); }
+.feedback-view {
+  text-align: center;
+}
+
+.feedback-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 20px;
+  border: 2px solid;
+  box-shadow: 0 0 20px;
+  font-size: 32px;
+}
+
+.feedback-icon.status-success {
+  color: #22c55e;
+  border-color: #22c55e;
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.6);
+}
+.feedback-icon.status-error {
+  color: #ef4444;
+  border-color: #ef4444;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+}
+.feedback-icon.status-warning {
+  color: #f59e0b;
+  border-color: #f59e0b;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+}
+.feedback-icon.status-info {
+  color: #3b82f6;
+  border-color: #3b82f6;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+}
+
+.feedback-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: white;
+}
+
+.feedback-message {
+  font-size: 14px;
+  color: #94a3b8;
+  margin-bottom: 24px;
+}
+
+.confirm-button ion-spinner {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
 }
