@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { arrowBackOutline, timeOutline } from 'ionicons/icons';
 import { Router, ActivatedRoute } from '@angular/router';
+import { InventoryService } from 'src/app/services/inventary.service';
 
 @Component({
   selector: 'app-inicio-mouse',
@@ -14,20 +15,26 @@ import { Router, ActivatedRoute } from '@angular/router';
   imports: [IonicModule, CommonModule, FormsModule],
 })
 export class InicioMousePage implements OnInit {
-
   categoria: any;
-  items: any[] = [];
+  items: any[] = []; // Esta es tu lista COMPLETA
   cargando = true;
   zonaId!: number;
 
-  constructor(private router: Router, private route: ActivatedRoute) {
+  displayedItems: any[] = [];
+
+  private itemsPerBatch = 15; // Cuántos cargar cada vez
+  private currentIndex = 0;
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private inventoryService: InventoryService
+  ) {
     addIcons({ arrowBackOutline, timeOutline });
   }
 
   ngOnInit() {
-    // 👇 obtenemos zonaId desde la ruta
     this.zonaId = Number(this.route.snapshot.paramMap.get('zonaId'));
-    // console.log('ZonaId recibido:', this.zonaId);
 
     const nav = this.router.getCurrentNavigation();
     if (nav?.extras.state && nav.extras.state['categoria']) {
@@ -35,7 +42,26 @@ export class InicioMousePage implements OnInit {
       this.items = this.categoria.items;
     }
 
+    this.loadInitialBatch();
     this.cargando = false;
+  }
+
+  loadInitialBatch() {
+    this.displayedItems = this.items.slice(0, this.itemsPerBatch);
+    this.currentIndex = this.itemsPerBatch;
+  }
+
+  loadMore() {
+    const nextBatch = this.items.slice(this.currentIndex, this.currentIndex + this.itemsPerBatch);
+
+    this.displayedItems.push(...nextBatch);
+
+    this.currentIndex += this.itemsPerBatch;
+
+  }
+
+  isScanned(item: any): boolean {
+    return this.inventoryService.isItemScanned(item.id);
   }
 
   goBack() {
