@@ -18,7 +18,6 @@
   top: max(28px, env(safe-area-inset-top));
   left: 16px;
   z-index: 10;
-  --background: rgba(10, 15, 44, 0.55);
   --color: #fff;
   border-radius: 50%;
   border: 1px solid rgba(59, 130, 246, 0.5);
@@ -37,7 +36,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: clamp(80px, 15vh, 120px);
+  margin-top: 40px;
 }
 
 .icon-circle {
@@ -70,22 +69,199 @@
   text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
 }
 
-/* Barra de búsqueda */
-.custom-search {
-  width: 90%;
-  margin: 28px auto;
-  --background: rgba(17, 23, 56, 0.55);
-  --color: #fff;
-  --icon-color: #60a5fa;
-  border: 2px solid rgba(59, 130, 246, 0.5);
-  border-radius: 18px;
-  backdrop-filter: blur(5px);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+/* Contenedor del botón Unirse */
+.actions-button-container {
+  width: 100%;
+  margin: 12px auto;
+  display: flex;
+  justify-content: space-evenly;
 }
 
-.custom-search:focus-within {
+/* Botón Unirse */
+.action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 120px;
+  padding: 12px 0;
+  border-radius: 12px;
+  color: white;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(59, 130, 246, 0.5);
+  box-shadow:
+    0 4px 15px rgba(59, 130, 246, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.action-button:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 20px rgba(59, 130, 246, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.action-button:active {
+  transform: translateY(0);
+  box-shadow:
+    0 2px 10px rgba(59, 130, 246, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.action-icon {
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.action-text {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Barra espaciadora */
+.separator {
+  width: 90%;
+  height: 3px;
+  background-color: rgba(59, 130, 246, 0.5);
+  margin: 20px auto;
+}
+
+.filters-container {
+  width: 90%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filters-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  flex: 1;
+  padding: 4px 0;
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.filters-scroll::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari */
+}
+
+.filter-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  background: rgba(17, 23, 56, 0.4);
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+}
+
+.filter-button:hover {
+  border-color: rgba(59, 130, 246, 0.6);
+  color: #e2e8f0;
+}
+
+.filter-button.active {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
   border-color: #3b82f6;
-  box-shadow: 0 0 14px rgba(59, 130, 246, 0.5);
+  color: white;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+}
+
+.filter-button ion-icon {
+  font-size: 16px;
+}
+
+.clear-filters-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.clear-filters-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.6);
+}
+
+.clear-filters-empty-btn {
+  margin-top: 16px;
+  padding: 10px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(59, 130, 246, 0.5);
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.clear-filters-empty-btn:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: #3b82f6;
+}
+
+/* Estados de carga y vacío */
+.loading-state,
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0px 0px;
+  text-align: center;
+
+  ion-spinner {
+    --color: #3b82f6;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+  }
+
+  .empty-icon {
+    font-size: 64px;
+    color: #94a3b8;
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: white;
+  }
+
+  p {
+    color: #94a3b8;
+    margin: 0;
+    font-size: 14px;
+  }
 }
 
 /* Contenedor de tarjetas */
@@ -98,7 +274,7 @@
   padding-bottom: 60px;
 }
 
-/* Tarjetas más pequeñas y elegantes */
+/* Tarjetas */
 .card-zona {
   width: 90%;
   height: 120px;
@@ -111,7 +287,7 @@
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6),
-              0 0 18px rgba(59, 130, 246, 0.4);
+    0 0 18px rgba(59, 130, 246, 0.4);
   transition: all 0.25s ease;
   backdrop-filter: blur(4px);
   cursor: pointer;
@@ -120,7 +296,7 @@
 .card-zona:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 25px rgba(59, 130, 246, 0.7),
-              0 0 25px rgba(59, 130, 246, 0.6);
+    0 0 25px rgba(59, 130, 246, 0.6);
 }
 
 .card-zona:active {
@@ -140,27 +316,48 @@
   color: #ffffff;
 }
 
-.badge-disponible {
-  background-color: #16a34a;
-  color: white;
+ion-refresher {
+  --color: #3b82f6;
+}
+
+ion-refresher-content {
+  --refreshing-color: #3b82f6;
+  --color: #3b82f6;
+}
+
+.badge {
   font-size: 13px;
   font-weight: 600;
   padding: 5px 12px;
   border-radius: 12px;
-  box-shadow: 0 0 10px rgba(22, 163, 74, 0.5);
   width: fit-content;
 }
 
-/* Icono derecho */
+.badge-disponible {
+  background-color: #16a34a;
+  color: white;
+  box-shadow: 0 0 10px rgba(22, 163, 74, 0.5);
+}
+
+.badge-inventario {
+  background-color: #d97706;
+  color: white;
+  box-shadow: 0 0 10px rgba(217, 119, 6, 0.5);
+}
+
+.badge-verificacion {
+  background-color: #2563eb;
+  color: white;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+}
+
 .icon-circle-big {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
 }
 
 .icon-circle-big ion-icon {
@@ -168,4 +365,90 @@
   color: white;
 }
 
+/* Iconos para diferentes estados */
+.icon-circle-big.free {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+}
 
+.icon-circle-big.inventory {
+  background: linear-gradient(135deg, #d97706, #f59e0b);
+}
+
+.icon-circle-big.verification {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+}
+
+/* Mantener los estilos existentes para disabled */
+.card-zona.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  filter: grayscale(50%);
+}
+
+.icon-circle-big ion-icon {
+  font-size: 30px;
+  color: white;
+}
+
+/* Animaciones */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+  .zones-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .card-zona {
+    width: 100%;
+    height: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  .filters-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .clear-filters-btn {
+    align-self: flex-end;
+    margin-top: 8px;
+  }
+}
+
+/* Estilo para el botón de escanear (nuevo) */
+.scan-button {
+  position: absolute;
+  top: max(28px, env(safe-area-inset-top));
+  /* Misma altura que el .back-button */
+  right: 16px;
+  /* <-- La clave: alineado a la derecha */
+  z-index: 10;
+
+  /* Estilos copiados del .back-button para consistencia visual */
+  --background: rgba(10, 15, 44, 0.55);
+  --color: #fff;
+  border-radius: 50%;
+  border: 1px solid rgba(59, 130, 246, 0.5);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.scan-button:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.6);
+}

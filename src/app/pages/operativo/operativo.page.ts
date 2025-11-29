@@ -1,34 +1,27 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/services/auth.service';
 import {
-  IonContent,
-  IonButtons,
+  AlertController,
   IonButton,
+  IonContent,
   IonIcon,
-  IonItem,
-  IonList,
-  IonSelect,
-  IonSelectOption,
   IonInput,
-  IonHeader,
-  IonToolbar,
-  IonBackButton,
-  IonTitle,
-  IonLabel,
-  AlertController
+  IonItem,
+  IonSelect,
+  IonSelectOption
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
-  arrowBackOutline,
-  keypadOutline,
   appsOutline,
+  arrowBackOutline,
+  chevronDownOutline,
   documentTextOutline,
-  chevronDownOutline
-  
+  keypadOutline
 } from 'ionicons/icons';
+import { AuthService } from 'src/app/services/auth.service';
+import { SignalrService } from 'src/app/services/Connections/signalr.service';
 
 @Component({
   selector: 'app-operativo',
@@ -39,19 +32,12 @@ import {
     CommonModule,
     FormsModule,
     IonContent,
-    IonButtons,
     IonButton,
     IonIcon,
     IonItem,
-    IonList,
     IonSelect,
     IonSelectOption,
     IonInput,
-    IonHeader,
-    IonToolbar,
-    IonBackButton,
-    IonTitle,
-    IonLabel,
     CommonModule,
     FormsModule,
     IonContent
@@ -60,11 +46,12 @@ import {
 export class OperativoPage {
   tipoDoc?: string;
   numeroDoc = '';
-  
+
   constructor(
     private router: Router,
     private authService: AuthService,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private signalrService: SignalrService
   ) {
     addIcons({
       keypadOutline,
@@ -79,30 +66,51 @@ export class OperativoPage {
     this.router.navigate(['/login']);
   }
 
-  acceder() {
-    // console.log('DEBUG >> TipoDoc:', this.tipoDoc, 'NumeroDoc:', this.numeroDoc);
+  // Metodo para validar y limitar el input del numero de documento
+  onDocumentNumberInput(event: any) {
+    let value = event.detail.value;
 
-    if (!this.tipoDoc || !this.numeroDoc) {
-      this.showAlert('Datos incompletos', 'Debes seleccionar tipo y número de documento.');
-      return;
+    // Solo permitir numeros
+    value = value.replace(/[^0-9]/g, '');
+
+    // Limitar a 10 caracteres maximo
+    if (value.length > 10) {
+      value = value.substring(0, 10);
     }
-  
-    this.authService.loginOperativo(this.tipoDoc, this.numeroDoc).subscribe({
-      next: () => {
-        this.router.navigate(['/home']);
-      },
-      error: async (err) => {
-        let msg = 'Ocurrió un error al iniciar sesión.';
-        if (err.status === 401) {
-          msg = err.error || 'Credenciales inválidas o rol no autorizado.';
-        }
-        await this.showAlert('Acceso denegado', msg);
-      }
-    });
+
+    // Actualizar el modelo y el input
+    this.numeroDoc = value;
+    event.target.value = value;
+
+    // Prevenir que se escriba más de 10 caracteres
+    if (value.length >= 10) {
+      event.target.setAttribute('maxlength', '10');
+    }
   }
 
-  unirse() {
-    this.router.navigate(['/unirse']);
+  acceder() {
+    if (!this.tipoDoc || !this.numeroDoc) {
+      this.showAlert('Error', 'Debes completar los datos.');
+      return;
+    }
+
+    // Validación adicional de longitud
+    if (this.numeroDoc.length > 10) {
+      this.showAlert('Error', 'El número de documento no puede tener más de 10 dígitos.');
+      return;
+    }
+
+    this.authService.loginOperativo(this.tipoDoc, this.numeroDoc).subscribe({
+      next: async (res: any) => {
+        console.log('Login exitoso, iniciando SignalR...');
+        this.signalrService.startConnection();
+        this.router.navigate(['/home']);
+      },
+      error: async (err: Error) => {
+        console.error('Error en login:', err);
+        this.showAlert('Acceso denegado', err.message);
+      }
+    });
   }
 
   private async showAlert(header: string, message: string) {
